@@ -22,8 +22,10 @@ import java.util.Spliterator;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-import club.bonerbrew.neatarrays.ShortIterator;
-import club.bonerbrew.neatarrays.ShortSpliterator;
+import org.junit.Assert;
+
+import club.bonerbrew.neatarrays.CharIterator;
+import club.bonerbrew.neatarrays.CharSpliterator;
 
 /**
  * Resizable-array implementation of the {@link Deque} interface.  Array
@@ -34,8 +36,8 @@ import club.bonerbrew.neatarrays.ShortSpliterator;
  * {@link Stack} when used as a stack, and faster than {@link LinkedList}
  * when used as a queue.
  *
- * <p>Most {@code ShortDeque} operations run in amortized constant time.
- * Exceptions include {@link #remove(short) remove}, {@link
+ * <p>Most {@code CharDeque} operations run in amortized constant time.
+ * Exceptions include {@link #remove(char) remove}, {@link
  * #removeFirstOccurrence removeFirstOccurrence}, {@link #removeLastOccurrence
  * removeLastOccurrence}, {@link #contains contains}, {@link #iterator
  * iterator.remove()}, and the bulk operations, all of which run in linear
@@ -68,12 +70,12 @@ import club.bonerbrew.neatarrays.ShortSpliterator;
  *
  * @author  Josh Bloch and Doug Lea
  * @since   1.6
- * @param <short> the type of elements held in this collection
+ * @param <char> the type of elements held in this collection
  */
-public class ShortDeque implements Cloneable, Serializable
+public class CharDeque implements Cloneable, Serializable
 {
-    // the primitive value that represents 'NULL_VALUE'
-    private static final short NULL_VALUE = Short.MIN_VALUE;
+    // the primitive value that represents 'null'
+    private static final char NULL_VALUE = Character.MIN_VALUE;
     
     /**
      * The array in which the elements of the deque are stored.
@@ -83,9 +85,9 @@ public class ShortDeque implements Cloneable, Serializable
      * resized (see doubleCapacity) immediately upon becoming full,
      * thus avoiding head and tail wrapping around to equal each
      * other.  We also guarantee that all array cells not holding
-     * deque elements are always NULL_VALUE.
+     * deque elements are always equal to {@code NULL_VALUE}.
      */
-    transient short[] elements; // non-private to simplify nested class access
+    transient char[] elements; // non-private to simplify nested class access
 
     /**
      * The index of the element at the head of the deque (which is the
@@ -96,7 +98,7 @@ public class ShortDeque implements Cloneable, Serializable
 
     /**
      * The index at which the next element would be added to the tail
-     * of the deque (via addLast(short), add(short), or push(short)).
+     * of the deque (via addLast(char), add(char), or push(char)).
      */
     transient int tail;
 
@@ -110,7 +112,7 @@ public class ShortDeque implements Cloneable, Serializable
      * initialize a smaller piece of the array and use the System.arraycopy 
      * call to fill in the rest of the array in an expanding binary fashion
      */
-    public static void shortFill(short[] array) {
+    public static void shortFill(char[] array) {
       int len = array.length;
     
       if (len > 0){
@@ -145,7 +147,7 @@ public class ShortDeque implements Cloneable, Serializable
             if (initialCapacity < 0)   // Too many elements, must back off
                 initialCapacity >>>= 1;// Good luck allocating 2 ^ 30 elements
         }
-        elements = new short[initialCapacity];
+        elements = new char[initialCapacity];
         shortFill(elements);
     }
 
@@ -161,7 +163,7 @@ public class ShortDeque implements Cloneable, Serializable
         int newCapacity = n << 1;
         if (newCapacity < 0)
             throw new IllegalStateException("Sorry, deque too big");
-        short[] a = new short[newCapacity];
+        char[] a = new char[newCapacity];
         shortFill(a);
         System.arraycopy(elements, p, a, 0, r);
         System.arraycopy(elements, 0, a, r, p);
@@ -177,7 +179,7 @@ public class ShortDeque implements Cloneable, Serializable
      *
      * @return its argument
      */
-    private short[] copyElements(short[] a) {
+    private char[] copyElements(char[] a) {
         if (head < tail) {
             System.arraycopy(elements, head, a, 0, size());
         } else if (head > tail) {
@@ -192,8 +194,8 @@ public class ShortDeque implements Cloneable, Serializable
      * Constructs an empty array deque with an initial capacity
      * sufficient to hold 16 elements.
      */
-    public ShortDeque() {
-        elements = new short[16];
+    public CharDeque() {
+        elements = new char[16];
         shortFill(elements);
     }
 
@@ -203,7 +205,7 @@ public class ShortDeque implements Cloneable, Serializable
      *
      * @param numElements  lower bound on initial capacity of the deque
      */
-    public ShortDeque(int numElements) {
+    public CharDeque(int numElements) {
         allocateElements(numElements);
     }
 
@@ -217,13 +219,13 @@ public class ShortDeque implements Cloneable, Serializable
      * @param c the collection whose elements are to be placed into the deque
      * @throws NullPointerException if the specified collection is NULL_VALUE
      */
-    public ShortDeque(Collection<Short> c) {
+    public CharDeque(Collection<Character> c) {
         allocateElements(c.size());
         addAll(c);
     }
 
-    public void addAll(Collection<Short> c) {
-        for (Short s : c) {
+    public void addAll(Collection<Character> c) {
+        for (Character s : c) {
             add(s);
         }
     }
@@ -238,9 +240,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @param e the element to add
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public void addFirst(short e) {
-        if (e == NULL_VALUE)
-            throw new NullPointerException();
+    public void addFirst(char e) {
         elements[head = (head - 1) & (elements.length - 1)] = e;
         if (head == tail)
             doubleCapacity();
@@ -254,9 +254,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @param e the element to add
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public void addLast(short e) {
-        if (e == NULL_VALUE)
-            throw new NullPointerException();
+    public void addLast(char e) {
         elements[tail] = e;
         if ( (tail = (tail + 1) & (elements.length - 1)) == head)
             doubleCapacity();
@@ -269,7 +267,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return {@code true} (as specified by {@link Deque#offerFirst})
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public boolean offerFirst(short e) {
+    public boolean offerFirst(char e) {
         addFirst(e);
         return true;
     }
@@ -281,140 +279,83 @@ public class ShortDeque implements Cloneable, Serializable
      * @return {@code true} (as specified by {@link Deque#offerLast})
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public boolean offerLast(short e) {
+    public boolean offerLast(char e) {
         addLast(e);
         return true;
     }
 
     /**
-     * @throws NoSuchElementException {@inheritDoc}
+     * @throws NoSuchElementException if this deque is empty
      */
-    public short removeFirst() {
-        short x = pollFirst();
-        if (x == NULL_VALUE)
+    public char removeFirst() {
+        if (head == tail) // isEmpty()
             throw new NoSuchElementException();
-        return x;
+        return pollFirst();
     }
 
     /**
-     * @throws NoSuchElementException {@inheritDoc}
+     * @throws NoSuchElementException if this deque is empty
      */
-    public short removeLast() {
-        short x = pollLast();
-        if (x == NULL_VALUE)
+    public char removeLast() {
+        if (head == tail) // isEmpty()
             throw new NoSuchElementException();
-        return x;
+        return pollLast();
     }
 
-    public short pollFirst() {
+    public char pollFirst() {
         int h = head;
-        
-        short result = (short) elements[h];
+
         // Element is NULL_VALUE if deque empty
-        if (result == NULL_VALUE)
+        if (h == tail) // isEmpty()
             return NULL_VALUE;
-        elements[h] = NULL_VALUE;     // Must NULL_VALUE out slot
+        
+        char result = elements[h];
+        elements[h] = NULL_VALUE; // Must NULL_VALUE out slot
         head = (h + 1) & (elements.length - 1);
         return result;
     }
 
-    public short pollLast() {
+    public char pollLast() {
+        // Element is NULL_VALUE if deque empty
+        if (head == tail) // not `t` here // isEmpty()
+            return NULL_VALUE;
+        
         int t = (tail - 1) & (elements.length - 1);
         
-        short result = (short) elements[t];
-        if (result == NULL_VALUE)
-            return NULL_VALUE;
-        elements[t] = NULL_VALUE;
+        char result = elements[t];
+        elements[t] = NULL_VALUE; // Must NULL_VALUE out slot
         tail = t;
         return result;
     }
 
     /**
-     * @throws NoSuchElementException {@inheritDoc}
+     * @throws NoSuchElementException if this deque is empty
      */
-    public short getFirst() {
-        short result = (short) elements[head];
-        if (result == NULL_VALUE)
+    public char getFirst() {
+        if (head == tail) // isEmpty()
             throw new NoSuchElementException();
-        return result;
+        return elements[head];
     }
 
     /**
-     * @throws NoSuchElementException {@inheritDoc}
+     * @throws NoSuchElementException if this deque is empty
      */
-    public short getLast() {
-        
-        short result = (short) elements[(tail - 1) & (elements.length - 1)];
-        if (result == NULL_VALUE)
+    public char getLast() {
+        if (head == tail) // isEmpty()
             throw new NoSuchElementException();
-        return result;
+        return elements[(tail - 1) & (elements.length - 1)];
     }
 
     
-    public short peekFirst() {
+    public char peekFirst() {
         // elements[head] is NULL_VALUE if deque empty
-        return (short) elements[head];
+        return elements[head];
     }
 
     
-    public short peekLast() {
-        return (short) elements[(tail - 1) & (elements.length - 1)];
-    }
-
-    /**
-     * Removes the first occurrence of the specified element in this
-     * deque (when traversing the deque from head to tail).
-     * If the deque does not contain the element, it is unchanged.
-     * More formally, removes the first element {@code e} such that
-     * {@code o.equals(e)} (if such an element exists).
-     * Returns {@code true} if this deque contained the specified element
-     * (or equivalently, if this deque changed as a result of the call).
-     *
-     * @param o element to be removed from this deque, if present
-     * @return {@code true} if the deque contained the specified element
-     */
-    public boolean removeFirstOccurrence(short o) {
-        if (o == NULL_VALUE)
-            return false;
-        int mask = elements.length - 1;
-        int i = head;
-        short x;
-        while ( (x = elements[i]) != NULL_VALUE) {
-            if (o == x) {
-                delete(i);
-                return true;
-            }
-            i = (i + 1) & mask;
-        }
-        return false;
-    }
-
-    /**
-     * Removes the last occurrence of the specified element in this
-     * deque (when traversing the deque from head to tail).
-     * If the deque does not contain the element, it is unchanged.
-     * More formally, removes the last element {@code e} such that
-     * {@code o.equals(e)} (if such an element exists).
-     * Returns {@code true} if this deque contained the specified element
-     * (or equivalently, if this deque changed as a result of the call).
-     *
-     * @param o element to be removed from this deque, if present
-     * @return {@code true} if the deque contained the specified element
-     */
-    public boolean removeLastOccurrence(short o) {
-        if (o == NULL_VALUE)
-            return false;
-        int mask = elements.length - 1;
-        int i = (tail - 1) & mask;
-        short x;
-        while ( (x = elements[i]) != NULL_VALUE) {
-            if (o == x) {
-                delete(i);
-                return true;
-            }
-            i = (i - 1) & mask;
-        }
-        return false;
+    public char peekLast() {
+        // is NULL_VALUE if deque empty
+        return elements[(tail - 1) & (elements.length - 1)];
     }
 
     // *** Queue methods ***
@@ -428,7 +369,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return {@code true} (as specified by {@link Collection#add})
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public boolean add(short e) {
+    public boolean add(char e) {
         addLast(e);
         return true;
     }
@@ -442,7 +383,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return {@code true} (as specified by {@link Queue#offer})
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public boolean offer(short e) {
+    public boolean offer(char e) {
         return offerLast(e);
     }
 
@@ -457,7 +398,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return the head of the queue represented by this deque
      * @throws NoSuchElementException {@inheritDoc}
      */
-    public short remove() {
+    public char remove() {
         return removeFirst();
     }
 
@@ -471,7 +412,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return the head of the queue represented by this deque, or
      *         {@code NULL_VALUE} if this deque is empty
      */
-    public short poll() {
+    public char poll() {
         return pollFirst();
     }
 
@@ -485,7 +426,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return the head of the queue represented by this deque
      * @throws NoSuchElementException {@inheritDoc}
      */
-    public short element() {
+    public char element() {
         return getFirst();
     }
 
@@ -498,7 +439,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @return the head of the queue represented by this deque, or
      *         {@code NULL_VALUE} if this deque is empty
      */
-    public short peek() {
+    public char peek() {
         return peekFirst();
     }
 
@@ -513,7 +454,7 @@ public class ShortDeque implements Cloneable, Serializable
      * @param e the element to push
      * @throws NullPointerException if the specified element is NULL_VALUE
      */
-    public void push(short e) {
+    public void push(char e) {
         addFirst(e);
     }
 
@@ -527,7 +468,7 @@ public class ShortDeque implements Cloneable, Serializable
      *         of the stack represented by this deque)
      * @throws NoSuchElementException {@inheritDoc}
      */
-    public short pop() {
+    public char pop() {
         return removeFirst();
     }
 
@@ -537,6 +478,14 @@ public class ShortDeque implements Cloneable, Serializable
             (elements[head] != NULL_VALUE &&
              elements[(tail - 1) & (elements.length - 1)] != NULL_VALUE);
         assert elements[(head - 1) & (elements.length - 1)] == NULL_VALUE;
+    }
+
+    public void jUnitAssertInvariants() {
+        Assert.assertTrue(elements[tail] == NULL_VALUE);
+        Assert.assertTrue(head == tail ? elements[head] == NULL_VALUE :
+            (elements[head] != NULL_VALUE &&
+            elements[(tail - 1) & (elements.length - 1)] != NULL_VALUE));
+        Assert.assertTrue(elements[(head - 1) & (elements.length - 1)] == NULL_VALUE);
     }
 
     /**
@@ -549,9 +498,9 @@ public class ShortDeque implements Cloneable, Serializable
      *
      * @return true if elements moved backwards
      */
-    private boolean delete(int i) {
+    public boolean delete(int i) {
         checkInvariants();
-        final short[] elements = this.elements;
+        final char[] elements = this.elements;
         final int mask = elements.length - 1;
         final int h = head;
         final int t = tail;
@@ -600,6 +549,15 @@ public class ShortDeque implements Cloneable, Serializable
     }
 
     /**
+     * Returns the number of elements this deque can contain without increasing in size.
+     * 
+     * @return the number of elements this deque can contain without increasing in size.
+     */
+    public int space() {
+        return elements.length;
+    }
+
+    /**
      * Returns {@code true} if this deque contains no elements.
      *
      * @return {@code true} if this deque contains no elements
@@ -616,15 +574,15 @@ public class ShortDeque implements Cloneable, Serializable
      *
      * @return an iterator over the elements in this deque
      */
-    public ShortIterator iterator() {
+    public CharIterator iterator() {
         return new DeqIterator();
     }
 
-    public ShortIterator descendingIterator() {
+    public CharIterator descendingIterator() {
         return new DescendingIterator();
     }
 
-    private class DeqIterator implements ShortIterator {
+    private class DeqIterator implements CharIterator {
         /**
          * Index of element to be returned by subsequent call to next.
          */
@@ -646,14 +604,14 @@ public class ShortDeque implements Cloneable, Serializable
             return cursor != fence;
         }
 
-        public short next() {
+        public char next() {
             if (cursor == fence)
                 throw new NoSuchElementException();
             
-            short result = (short) elements[cursor];
+            char result = elements[cursor];
             // This check doesn't catch all possible comodifications,
             // but does catch the ones that corrupt traversal
-            if (tail != fence || result == NULL_VALUE)
+            if (tail != fence)
                 throw new ConcurrentModificationException();
             lastRet = cursor;
             cursor = (cursor + 1) & (elements.length - 1);
@@ -671,7 +629,7 @@ public class ShortDeque implements Cloneable, Serializable
         }
     }
 
-    private class DescendingIterator implements ShortIterator {
+    private class DescendingIterator implements CharIterator {
         /*
          * This class is nearly a mirror-image of DeqIterator, using
          * tail instead of head for initial cursor, and head instead of
@@ -685,13 +643,13 @@ public class ShortDeque implements Cloneable, Serializable
             return cursor != fence;
         }
 
-        public short next() {
+        public char next() {
             if (cursor == fence)
                 throw new NoSuchElementException();
             cursor = (cursor - 1) & (elements.length - 1);
             
-            short result = (short) elements[cursor];
-            if (head != fence || result == NULL_VALUE)
+            char result = elements[cursor];
+            if (head != fence)
                 throw new ConcurrentModificationException();
             lastRet = cursor;
             return result;
@@ -713,19 +671,16 @@ public class ShortDeque implements Cloneable, Serializable
      * More formally, returns {@code true} if and only if this deque contains
      * at least one element {@code e} such that {@code o.equals(e)}.
      *
-     * @param o short to be checked for containment in this deque
+     * @param o char to be checked for containment in this deque
      * @return {@code true} if this deque contains the specified element
      */
-    public boolean contains(short o) {
-        if (o == NULL_VALUE)
-            return false;
-        int mask = elements.length - 1;
-        int i = head;
-        short x;
-        while ( (x = elements[i]) != NULL_VALUE) {
-            if (o == x)
+    public boolean contains(char o) {
+        if (head == tail) return false;
+        char s = NULL_VALUE;
+        for (CharIterator it = this.iterator(); it.hasNext(); s = it.next()) {
+            if (s == o) {
                 return true;
-            i = (i + 1) & mask;
+            }
         }
         return false;
     }
@@ -738,13 +693,35 @@ public class ShortDeque implements Cloneable, Serializable
      * Returns {@code true} if this deque contained the specified element
      * (or equivalently, if this deque changed as a result of the call).
      *
-     * <p>This method is equivalent to {@link #removeFirstOccurrence(short)}.
+     * <p>This method is equivalent to {@link #removeFirstOccurrence(char)}.
      *
      * @param o element to be removed from this deque, if present
      * @return {@code true} if this deque contained the specified element
      */
-    public boolean remove(short o) {
-        return removeFirstOccurrence(o);
+    public boolean remove(char o) {
+        int h = head;
+        int t = tail;
+        if (h != t) { // clear all cells
+            int ord = 0;//ordered index
+            int i = h;
+            int mask = elements.length - 1;
+            do {
+                if (elements[i] == o) {
+                    delete(ord);
+                    return true;
+                }
+                i = (i + 1) & mask;
+                ord++;
+            } while (i != t);
+            //for testing
+            //Assert.assertTrue(ord == size());
+        }
+        
+        return false;
+    }
+
+    public void removeAt(int i) {
+        delete(i);
     }
 
     /**
@@ -778,21 +755,21 @@ public class ShortDeque implements Cloneable, Serializable
      *
      * @return an array containing all of the elements in this deque
      */
-    public short[] toArray() {
-        return copyElements(new short[size()]);
+    public char[] toArray() {
+        return copyElements(new char[size()]);
     }
 
-    // *** short methods ***
+    // *** char methods ***
 
     /**
      * Returns a copy of this deque.
      *
      * @return a copy of this deque
      */
-    public ShortDeque clone() {
+    public CharDeque clone() {
         try {
             
-            ShortDeque result = (ShortDeque) super.clone();
+            CharDeque result = (CharDeque) super.clone();
             result.elements = Arrays.copyOf(elements, elements.length);
             return result;
         } catch (CloneNotSupportedException e) {
@@ -836,7 +813,7 @@ public class ShortDeque implements Cloneable, Serializable
 
         // Read in all elements in the proper order.
         for (int i = 0; i < size; i++)
-            elements[i] = s.readShort();
+            elements[i] = s.readChar();
     }
 
     /**
@@ -847,22 +824,22 @@ public class ShortDeque implements Cloneable, Serializable
      * <p>The {@code Spliterator} reports {@link Spliterator#SIZED},
      * {@link Spliterator#SUBSIZED}, {@link Spliterator#ORDERED}, and
      * {@link Spliterator#NONNULL}.  Overriding implementations should document
-     * the reporting of additional characteristic values.
+     * the reporting of additional {@literal cha}racteristic values.
      *
      * @return a {@code Spliterator} over the elements in this deque
      * @since 1.8
      */
-    public ShortSpliterator spliterator() {
+    public CharSpliterator spliterator() {
         return new DeqSpliterator(this, -1, -1);
     }
 
-    static final class DeqSpliterator implements ShortSpliterator {
-        private final ShortDeque deq;
+    static final class DeqSpliterator implements CharSpliterator {
+        private final CharDeque deq;
         private int fence;  // -1 until first use
         private int index;  // current index, modified on traverse/split
 
         /** Creates new spliterator covering the given array and range */
-        DeqSpliterator(ShortDeque deq, int origin, int fence) {
+        DeqSpliterator(CharDeque deq, int origin, int fence) {
             this.deq = deq;
             this.index = origin;
             this.fence = fence;
@@ -888,25 +865,23 @@ public class ShortDeque implements Cloneable, Serializable
             return null;
         }
 
-        public void forEachRemaining(Consumer<Short> consumer) {
+        public void forEachRemaining(Consumer<Character> consumer) {
             if (consumer == null)
                 throw new NullPointerException();
-            short[] a = deq.elements;
+            char[] a = deq.elements;
             int m = a.length - 1, f = getFence(), i = index;
             index = f;
             while (i != f) {
-                 short e = (short)a[i];
+                 char e = a[i];
                 i = (i + 1) & m;
-                if (e == NULL_VALUE)
-                    throw new ConcurrentModificationException();
                 consumer.accept(e);
             }
         }
 
-        public boolean tryAdvance(Consumer<Short> consumer) {
+        public boolean tryAdvance(Consumer<Character> consumer) {
             if (consumer == null)
                 throw new NullPointerException();
-            short[] a = deq.elements;
+            char[] a = deq.elements;
             int m = a.length - 1;
             
             getFence();
@@ -914,10 +889,8 @@ public class ShortDeque implements Cloneable, Serializable
             int i = index;
             
             if (i != fence) {
-                 short e = (short)a[i];
+                 char e = a[i];
                 index = (i + 1) & m;
-                if (e == NULL_VALUE)
-                    throw new ConcurrentModificationException();
                 consumer.accept(e);
                 return true;
             }
@@ -928,7 +901,7 @@ public class ShortDeque implements Cloneable, Serializable
             int n = getFence() - index;
             if (n < 0)
                 n += deq.elements.length;
-            return (long) n;
+            return n;
         }
 
         @Override
