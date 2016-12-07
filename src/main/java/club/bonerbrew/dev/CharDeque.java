@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import club.bonerbrew.neatarrays.CharIterator;
 import club.bonerbrew.neatarrays.CharSpliterator;
+import club.bonerbrew.dev.InternalAssert;
 
 /**
  * Resizable-array implementation of the {@link Deque} interface.  Array

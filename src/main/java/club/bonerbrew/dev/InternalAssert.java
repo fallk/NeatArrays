@@ -70,24 +70,6 @@ public final class InternalAssert {
             return new ComparisonCompactor(MAX_CONTEXT_LENGTH, fExpected, fActual).compact(super.getMessage());
         }
 
-        /**
-         * Returns the actual string value
-         *
-         * @return the actual string value
-         */
-        public String getActual() {
-            return fActual;
-        }
-
-        /**
-         * Returns the expected string value
-         *
-         * @return the expected string value
-         */
-        public String getExpected() {
-            return fExpected;
-        }
-
         private static class ComparisonCompactor {
             private static final String ELLIPSIS = "...";
             private static final String DIFF_END = "]";
@@ -181,66 +163,6 @@ public final class InternalAssert {
                     return DIFF_START + source.substring(sharedPrefix.length(), source.length() - sharedSuffix.length()) + DIFF_END;
                 }
             }
-        }
-    }
-
-    /**
-     * Thrown when two array elements differ
-     *
-     * @see Assert#assertArrayEquals(String, Object[], Object[])
-     */
-    static private class InternalArrayComparisonFailure extends AssertionError {
-
-        private static final long serialVersionUID = 1L;
-
-        /*
-         * We have to use the f prefix until the next major release to ensure
-         * serialization compatibility. 
-         * See https://github.com/junit-team/junit/issues/976
-         */
-        private final List<Integer> fIndices = new ArrayList<Integer>();
-        private final String fMessage;
-
-        /**
-         * Construct a new <code>ArrayComparisonFailure</code> with an error text and the array's dimension that was not equal
-         *
-         * @param cause the exception that caused the array's content to fail the assertion test
-         * @param index the array position of the objects that are not equal.
-         * @see Assert#assertArrayEquals(String, Object[], Object[])
-         */
-        public InternalArrayComparisonFailure(String message, AssertionError cause, int index) {
-            this.fMessage = message;
-            initCause(cause);
-            addDimension(index);
-        }
-
-        public void addDimension(int index) {
-            fIndices.add(0, index);
-        }
-
-        @Override
-        public String getMessage() {
-            StringBuilder sb = new StringBuilder();
-            if (fMessage != null) {
-                sb.append(fMessage);
-            }
-            sb.append("arrays first differed at element ");
-            for (int each : fIndices) {
-                sb.append("[");
-                sb.append(each);
-                sb.append("]");
-            }
-            sb.append("; ");
-            sb.append(getCause().getMessage());
-            return sb.toString();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String toString() {
-            return getMessage();
         }
     }
 
@@ -410,11 +332,6 @@ public final class InternalAssert {
      */
     private interface Description {
         /**
-         * A description that consumes input but does nothing.
-         */
-        static final Description NONE = new NullDescription();
-
-        /**
          * Appends some plain text to the description.
          */
         Description appendText(String text);
@@ -443,44 +360,6 @@ public final class InternalAssert {
          * Appends a list of {@link org.hamcrest.SelfDescribing} objects to the description.
          */
         Description appendList(String start, String separator, String end, Iterable<? extends SelfDescribing> values);
-
-        public static final class NullDescription implements Description {
-            @Override
-            public Description appendDescriptionOf(SelfDescribing value) {
-                return this;
-            }
-
-            @Override
-            public Description appendList(String start, String separator, String end, Iterable<? extends SelfDescribing> values) {
-                return this;
-            }
-
-            @Override
-            public Description appendText(String text) {
-                return this;
-            }
-
-            @Override
-            public Description appendValue(Object value) {
-                return this;
-            }
-
-            @SuppressWarnings("unchecked")
-            @Override
-            public <T> Description appendValueList(String start, String separator, String end, T... values) {
-                return this;
-            }
-
-            @Override
-            public <T> Description appendValueList(String start, String separator, String end, Iterable<T> values) {
-                return this;
-            }
-
-            @Override
-            public String toString() {
-                return "";
-            }
-        }
     }
 
     static class ArrayIterator implements Iterator<Object> {
@@ -1025,7 +904,7 @@ public final class InternalAssert {
      * @param expecteds Object array or array of arrays (multi-dimensional array) with expected values.
      * @param actuals Object array or array of arrays (multi-dimensional array) with actual values
      */
-    public static void assertArrayEquals(String message, Object[] expecteds, Object[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, Object[] expecteds, Object[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1046,7 +925,7 @@ public final class InternalAssert {
      * @param expecteds boolean array with expected values.
      * @param actuals boolean array with expected values.
      */
-    public static void assertArrayEquals(String message, boolean[] expecteds, boolean[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, boolean[] expecteds, boolean[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1067,7 +946,7 @@ public final class InternalAssert {
      * @param expecteds byte array with expected values.
      * @param actuals byte array with actual values
      */
-    public static void assertArrayEquals(String message, byte[] expecteds, byte[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, byte[] expecteds, byte[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1088,7 +967,7 @@ public final class InternalAssert {
      * @param expecteds char array with expected values.
      * @param actuals char array with actual values
      */
-    public static void assertArrayEquals(String message, char[] expecteds, char[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, char[] expecteds, char[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1109,7 +988,7 @@ public final class InternalAssert {
      * @param expecteds short array with expected values.
      * @param actuals short array with actual values
      */
-    public static void assertArrayEquals(String message, short[] expecteds, short[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, short[] expecteds, short[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1130,7 +1009,7 @@ public final class InternalAssert {
      * @param expecteds int array with expected values.
      * @param actuals int array with actual values
      */
-    public static void assertArrayEquals(String message, int[] expecteds, int[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, int[] expecteds, int[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1151,7 +1030,7 @@ public final class InternalAssert {
      * @param expecteds long array with expected values.
      * @param actuals long array with actual values
      */
-    public static void assertArrayEquals(String message, long[] expecteds, long[] actuals) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, long[] expecteds, long[] actuals) throws ArrayComparisonFailure {
         internalArrayEquals(message, expecteds, actuals);
     }
 
@@ -1173,7 +1052,7 @@ public final class InternalAssert {
      * @param actuals double array with actual values
      * @param delta the maximum delta between <code>expecteds[i]</code> and <code>actuals[i]</code> for which both numbers are still considered equal.
      */
-    public static void assertArrayEquals(String message, double[] expecteds, double[] actuals, double delta) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, double[] expecteds, double[] actuals, double delta) throws ArrayComparisonFailure {
         new InexactComparisonCriteria(delta).arrayEquals(message, expecteds, actuals);
     }
 
@@ -1196,7 +1075,7 @@ public final class InternalAssert {
      * @param actuals float array with actual values
      * @param delta the maximum delta between <code>expecteds[i]</code> and <code>actuals[i]</code> for which both numbers are still considered equal.
      */
-    public static void assertArrayEquals(String message, float[] expecteds, float[] actuals, float delta) throws InternalArrayComparisonFailure {
+    public static void assertArrayEquals(String message, float[] expecteds, float[] actuals, float delta) throws ArrayComparisonFailure {
         new InexactComparisonCriteria(delta).arrayEquals(message, expecteds, actuals);
     }
 
@@ -1218,7 +1097,7 @@ public final class InternalAssert {
      * @param expecteds Object array or array of arrays (multi-dimensional array) with expected values.
      * @param actuals Object array or array of arrays (multi-dimensional array) with actual values
      */
-    private static void internalArrayEquals(String message, Object expecteds, Object actuals) throws InternalArrayComparisonFailure {
+    private static void internalArrayEquals(String message, Object expecteds, Object actuals) throws ArrayComparisonFailure {
         new ExactComparisonCriteria().arrayEquals(message, expecteds, actuals);
     }
 

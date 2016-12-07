@@ -2,7 +2,7 @@ package club.bonerbrew.dev;
 
 import java.util.Collection;
 
-import org.junit.Assert;
+import club.bonerbrew.dev.InternalAssert;
 
 /**
  * Unsafe deques behave like regular ones, except for the fact they can store values which would previously be reserved.
@@ -55,8 +55,8 @@ public class CharDequeUnsafe extends CharDeque {
     
     @Override
     public void jUnitAssertInvariants() {
-        Assert.assertTrue(elements[tail] == NULL_VALUE);
+        InternalAssert.assertTrue(elements[tail] == NULL_VALUE);
         
-        Assert.assertTrue(elements[(head - 1) & (elements.length - 1)] == NULL_VALUE);
+        InternalAssert.assertTrue(elements[(head - 1) & (elements.length - 1)] == NULL_VALUE);
     }
 }
