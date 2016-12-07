@@ -22,8 +22,6 @@ import java.util.Spliterator;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-import org.junit.Assert;
-
 import club.bonerbrew.neatarrays.CharIterator;
 import club.bonerbrew.neatarrays.CharSpliterator;
 
@@ -481,11 +479,11 @@ public class CharDeque implements Cloneable, Serializable
     }
 
     public void jUnitAssertInvariants() {
-        Assert.assertTrue(elements[tail] == NULL_VALUE);
-        Assert.assertTrue(head == tail ? elements[head] == NULL_VALUE :
+        InternalAssert.assertTrue(elements[tail] == NULL_VALUE);
+        InternalAssert.assertTrue(head == tail ? elements[head] == NULL_VALUE :
             (elements[head] != NULL_VALUE &&
             elements[(tail - 1) & (elements.length - 1)] != NULL_VALUE));
-        Assert.assertTrue(elements[(head - 1) & (elements.length - 1)] == NULL_VALUE);
+        InternalAssert.assertTrue(elements[(head - 1) & (elements.length - 1)] == NULL_VALUE);
     }
 
     /**
