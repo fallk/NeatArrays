@@ -75,7 +75,7 @@ import club.bonerbrew.neatarrays.LongSpliterator;
 public class LongDeque implements Cloneable, Serializable
 {
     // the primitive value that represents 'null'
-    private static final long NULL_VALUE = Long.MIN_VALUE;
+    protected static final long NULL_VALUE = Long.MIN_VALUE;
     
     /**
      * The array in which the elements of the deque are stored.
@@ -472,7 +472,7 @@ public class LongDeque implements Cloneable, Serializable
         return removeFirst();
     }
 
-    private void checkInvariants() {
+    void checkInvariants() {
         assert elements[tail] == NULL_VALUE;
         assert head == tail ? elements[head] == NULL_VALUE :
             (elements[head] != NULL_VALUE &&
