@@ -1,4 +1,8 @@
-NeatArrays copyright (c) 2016 rafa1231518 (chrishansen69)
+The source code is bound to and licensed under the GNU General Public License version 2, with the classpath exception, as defined in the header of the source files.
+
+The generator code and "unsafe" extension of the primitive ArrayDeque are licensed under the LGPL:
+
+NeatArrays copyright (c) 2016-2017 rafa1231518 (chrishansen69)
 
 This library is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
