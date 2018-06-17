@@ -1,4 +1,4 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

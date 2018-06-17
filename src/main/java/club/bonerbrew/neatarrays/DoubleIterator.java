@@ -1,4 +1,4 @@
-package club.bonerbrew.neatarrays;
+package fallk.neatarrays;
 
 /**
  * An iterator over a collection.  {@code Iterator} takes the place of

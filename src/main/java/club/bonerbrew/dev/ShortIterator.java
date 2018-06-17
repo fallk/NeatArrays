@@ -1,4 +1,4 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 /**
  * An iterator over a collection.  {@code Iterator} takes the place of

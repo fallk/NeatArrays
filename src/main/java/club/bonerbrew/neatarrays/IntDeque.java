@@ -32,7 +32,7 @@
  * as explained at http://creativecommons.org/publicdomain/zero/1.0/.
  */
 
-package club.bonerbrew.neatarrays;
+package fallk.neatarrays;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -51,9 +51,9 @@ import java.util.Spliterator;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-import club.bonerbrew.neatarrays.IntIterator;
-import club.bonerbrew.neatarrays.IntSpliterator;
-import club.bonerbrew.dev.InternalAssert;
+import fallk.neatarrays.IntIterator;
+import fallk.neatarrays.IntSpliterator;
+import fallk.dev.InternalAssert;
 
 /**
  * Resizable-array implementation of the {@link Deque} interface.  Array

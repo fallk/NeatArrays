@@ -1,4 +1,4 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 import static java.lang.String.valueOf;
 

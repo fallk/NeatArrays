@@ -1,4 +1,4 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 import java.util.Comparator;
 import java.util.function.Consumer;

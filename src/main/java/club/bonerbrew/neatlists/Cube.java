@@ -1,4 +1,4 @@
-package club.bonerbrew.neatlists;
+package fallk.neatlists;
 
 import java.util.HashMap;
 import java.util.Map;

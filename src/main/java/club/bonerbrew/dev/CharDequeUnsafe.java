@@ -1,8 +1,8 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 import java.util.Collection;
 
-import club.bonerbrew.dev.InternalAssert;
+import fallk.dev.InternalAssert;
 
 /**
  * Unsafe deques behave like regular ones, except for the fact they can store values which would previously be reserved.

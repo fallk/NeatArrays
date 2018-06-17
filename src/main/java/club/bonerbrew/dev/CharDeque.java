@@ -1,4 +1,4 @@
-package club.bonerbrew.dev;
+package fallk.dev;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -22,9 +22,9 @@ import java.util.Spliterator;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-import club.bonerbrew.neatarrays.CharIterator;
-import club.bonerbrew.neatarrays.CharSpliterator;
-import club.bonerbrew.dev.InternalAssert;
+import fallk.neatarrays.CharIterator;
+import fallk.neatarrays.CharSpliterator;
+import fallk.dev.InternalAssert;
 
 /**
  * Resizable-array implementation of the {@link Deque} interface.  Array

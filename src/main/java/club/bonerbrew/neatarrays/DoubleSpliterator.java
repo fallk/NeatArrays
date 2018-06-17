@@ -1,4 +1,4 @@
-package club.bonerbrew.neatarrays;
+package fallk.neatarrays;
 
 import java.util.Comparator;
 import java.util.function.Consumer;
